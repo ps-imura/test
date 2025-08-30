@@ -40,7 +40,11 @@
 
 /* === タイポグラフィ === */
 h1, h2 {
+<<<<<<< HEAD
   font-family: "Lexend Giga", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", "MS PGothic", "Helvetica Neue", Arial, sans-serif;
+=======
+  font-family: "Lexend Giga", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", "MS PGothic", sans-serif;
+>>>>>>> 17c25e0d2ad77a47e059a41fec4e2999ac7bc8ce
   font-optical-sizing: auto;
   font-weight: 400;
   color: var(--c_key1);
@@ -184,7 +188,11 @@ section {
 
 .section-title {
   font-size: 2rem;
+<<<<<<< HEAD
   font-family: "Lexend Giga", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", "MS PGothic", "Helvetica Neue", Arial, sans-serif;
+=======
+  font-family: "Lexend Giga", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", "MS PGothic", sans-serif;
+>>>>>>> 17c25e0d2ad77a47e059a41fec4e2999ac7bc8ce
   font-weight: 700;
   color: #d20023;
   margin: 0 0 30px 0;
