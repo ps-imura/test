@@ -1,11 +1,6 @@
 [build]
   publish = "."
 
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Basic-Auth = "admin:secret123"
-
 # 開発環境用の環境変数
 [context.deploy-preview]
   environment = { NODE_ENV = "staging" }
