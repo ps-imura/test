@@ -10,6 +10,19 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- パスワード保護画面 -->
+  <div id="password-protection" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; color: white; font-family: Arial, sans-serif;">
+    <div style="text-align: center; padding: 20px;">
+      <h2 style="margin-bottom: 20px;">パスワードを入力してください</h2>
+      <input type="password" id="password-input" placeholder="パスワードを入力" style="padding: 10px; font-size: 16px; margin-bottom: 20px; width: 250px; border: none; border-radius: 5px;">
+      <br>
+      <button onclick="checkPassword()" style="padding: 10px 20px; font-size: 16px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">ログイン</button>
+      <p style="margin-top: 20px; font-size: 14px; opacity: 0.8;">開発環境用のパスワード保護です</p>
+    </div>
+  </div>
+
+  <!-- メインコンテンツ（最初は非表示） -->
+  <div id="main-content" style="display: none;">
   <header class="top-header">
     <div class="container">
       <img src="logo_blk.svg" alt="マチ★アソビ ロゴ" class="header-logo">
@@ -131,5 +144,46 @@
       </div>
     </div>
   </footer>
+  </div>
+
+  <!-- パスワード保護用JavaScript -->
+  <script>
+    function checkPassword() {
+      const password = document.getElementById('password-input').value;
+      const correctPassword = 'dev123'; // パスワードをここで設定
+      
+      if (password === correctPassword) {
+        document.getElementById('password-protection').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+        // パスワードをローカルストレージに保存（24時間有効）
+        localStorage.setItem('dev_access', 'true');
+        localStorage.setItem('access_time', Date.now());
+      } else {
+        alert('パスワードが正しくありません');
+        document.getElementById('password-input').value = '';
+      }
+    }
+
+    // ページ読み込み時にパスワードチェック
+    window.onload = function() {
+      const hasAccess = localStorage.getItem('dev_access');
+      const accessTime = localStorage.getItem('access_time');
+      const currentTime = Date.now();
+      const hours24 = 24 * 60 * 60 * 1000; // 24時間
+
+      // 24時間以内にアクセスした場合は自動的に表示
+      if (hasAccess && accessTime && (currentTime - accessTime) < hours24) {
+        document.getElementById('password-protection').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+      }
+    }
+
+    // Enterキーでもパスワード送信
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        checkPassword();
+      }
+    });
+  </script>
 </body>
 </html>
