@@ -4,10 +4,13 @@ export default async (request, context) => {
   if (auth !== expected) {
     return new Response("Unauthorized", {
       status: 401,
-      headers: { "WWW-Authenticate": 'Basic realm="Secure Area"' },
+      headers: { "WWW-Authenticate": 'Basic realm="Secure Area"', "X-Edge-Auth": "required" },
     });
   }
-  return context.next();
+  const response = await context.next();
+  const newHeaders = new Headers(response.headers);
+  newHeaders.set("X-Edge-Function", "basic-auth");
+  return new Response(response.body, { status: response.status, headers: newHeaders });
 };
 
 export const config = { path: "/*" };
