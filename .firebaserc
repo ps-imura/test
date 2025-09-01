@@ -1,8 +1,5 @@
 {
   "projects": {
-    "dev": "imuradev-5fc55",
     "default": "imuradev-5fc55"
-  },
-  "targets": {},
-  "etags": {}
+  }
 }
