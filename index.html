@@ -8,8 +8,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lexend+Giga:wght@400&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script src="gate.js" defer></script>
 </head>
 <body>
+  
   <header class="top-header">
     <div class="container">
       <img src="logo_blk.svg" alt="マチ★アソビ ロゴ" class="header-logo">
@@ -24,10 +26,18 @@
         <img src="KV_low.png"  alt="KV Low"  class="kv-low">
       </div>
     </div>
+    <section class="announcement-badge announcement-badge--hero" aria-label="開催告知（PC用）">
+      <p>マチ★アソビ Vol.29は、10月18日・19日に開催決定です！参加作品は順次告知して行きますのでお楽しみに。</p>
+      <p>さらに、今回のマチ★アソビでは「ニュータイプアニメアワード」や「痛車グランプリ」を開催予定！</p>
+    </section>
   </header>
 
   <main class="content">
     <div class="container">
+      <section class="announcement-badge" aria-label="開催告知">
+        <p>マチ★アソビ Vol.29は、10月18日・19日に開催決定です！参加作品は順次告知して行きますのでお楽しみに。</p>
+        <p>さらに、今回のマチ★アソビでは「ニュータイプアニメアワード」や「痛車グランプリ」を開催予定！</p>
+      </section>
       <!-- ニュースセクション -->
        <section class="news-section">
         <h2 class="section-title">NEWS</h2>
@@ -131,5 +141,22 @@
       </div>
     </div>
   </footer>
+  <script>
+    (function() {
+      function adjustNewsSpacing() {
+        var hero = document.querySelector('.hero');
+        var badge = document.querySelector('.announcement-badge--hero');
+        var news = document.querySelector('.news-section');
+        if (!hero || !badge || !news) return;
+        var heroBottom = hero.getBoundingClientRect().bottom + window.scrollY;
+        var badgeBottom = badge.getBoundingClientRect().bottom + window.scrollY;
+        var overlap = Math.max(0, badgeBottom - heroBottom);
+        news.style.marginTop = (overlap + 0) + 'px';
+      }
+      window.addEventListener('load', adjustNewsSpacing);
+      window.addEventListener('resize', adjustNewsSpacing);
+      document.addEventListener('DOMContentLoaded', adjustNewsSpacing);
+    })();
+  </script>
 </body>
 </html>

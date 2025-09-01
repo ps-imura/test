@@ -35,5 +35,7 @@ coverage/
 tmp/
 temp/
 
-# Local Netlify folder
-.netlify
+# Firebase
+.firebase/
+firebase-debug.log
+firebase-debug.*.log

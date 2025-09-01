@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ログイン - マチ★アソビ Vol.29</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend+Giga:wght@400&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .login-container {
+      max-width: 400px;
+      margin: 100px auto;
+      padding: 40px 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .form-group label {
+      font-weight: 500;
+      color: #333;
+    }
+    .form-group input {
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #007bff;
+    }
+    .login-button {
+      background: #007bff;
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .login-button:hover {
+      background: #0056b3;
+    }
+    .error-message {
+      color: #dc3545;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .success-message {
+      color: #28a745;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h1 style="text-align: center; margin-bottom: 30px;">ログイン</h1>
+    
+    <form class="login-form" id="loginForm">
+      <div class="form-group">
+        <label for="email">メールアドレス</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">パスワード</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      
+      <button type="submit" class="login-button">ログイン</button>
+    </form>
+    
+    <div id="errorMessage" class="error-message" style="display: none;"></div>
+    <div id="successMessage" class="success-message" style="display: none;"></div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+  
+  <!-- Firebase設定 -->
+  <script src="firebase-config.js"></script>
+  
+  <script>
+    // セキュリティ設定
+    const SECURITY_CONFIG = {
+      maxLoginAttempts: 5,
+      lockoutDuration: 15 * 60 * 1000, // 15分
+      sessionTimeout: 60 * 60 * 1000, // 1時間
+      passwordMinLength: 8
+    };
+
+    // Safariプライベートモード等でlocalStorageが書き込めない場合に備えた安全ストレージ
+    const memoryStore = {};
+    const storageAvailable = (() => {
+      try {
+        const k = '__storage_test__';
+        localStorage.setItem(k, '1');
+        localStorage.removeItem(k);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    })();
+    const storage = {
+      get(key) {
+        try { return storageAvailable ? localStorage.getItem(key) : (memoryStore[key] ?? null); } catch (e) { return memoryStore[key] ?? null; }
+      },
+      set(key, value) {
+        try {
+          if (storageAvailable) localStorage.setItem(key, value);
+          else memoryStore[key] = value;
+        } catch (e) { memoryStore[key] = value; }
+      },
+      remove(key) {
+        try {
+          if (storageAvailable) localStorage.removeItem(key);
+          else delete memoryStore[key];
+        } catch (e) { delete memoryStore[key]; }
+      }
+    };
+
+    // ログイン試行回数の管理
+    let loginAttempts = parseInt(storage.get('loginAttempts') || '0');
+    let lockoutUntil = parseInt(storage.get('lockoutUntil') || '0');
+
+    // ログイン試行回数をリセット
+    function resetLoginAttempts() {
+      loginAttempts = 0;
+      storage.set('loginAttempts', '0');
+      storage.remove('lockoutUntil');
+    }
+
+    // ログイン試行回数を増加
+    function incrementLoginAttempts() {
+      loginAttempts++;
+      storage.set('loginAttempts', loginAttempts.toString());
+      
+      if (loginAttempts >= SECURITY_CONFIG.maxLoginAttempts) {
+        const lockoutTime = Date.now() + SECURITY_CONFIG.lockoutDuration;
+        lockoutUntil = lockoutTime;
+        storage.set('lockoutUntil', lockoutTime.toString());
+      }
+    }
+
+    // ロックアウト状態をチェック
+    function checkLockout() {
+      if (lockoutUntil > 0 && Date.now() < lockoutUntil) {
+        const remainingTime = Math.ceil((lockoutUntil - Date.now()) / 1000 / 60);
+        return `アカウントがロックされています。${remainingTime}分後に再試行してください。`;
+      }
+      return null;
+    }
+
+    // パスワード強度チェック
+    function validatePassword(password) {
+      if (password.length < SECURITY_CONFIG.passwordMinLength) {
+        return `パスワードは最低${SECURITY_CONFIG.passwordMinLength}文字必要です。`;
+      }
+      if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+        return 'パスワードは大文字、小文字、数字を含む必要があります。';
+      }
+      return null;
+    }
+
+    // セッション管理
+    function startSession() {
+      const sessionStart = Date.now();
+      storage.set('sessionStart', sessionStart.toString());
+      
+      // セッションタイムアウトの設定
+      setTimeout(() => {
+        if (auth.currentUser) {
+          auth.signOut();
+          window.location.href = 'login.html';
+        }
+      }, SECURITY_CONFIG.sessionTimeout);
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorMessage = document.getElementById('errorMessage');
+      const successMessage = document.getElementById('successMessage');
+      
+      // ロックアウトチェック
+      const lockoutMessage = checkLockout();
+      if (lockoutMessage) {
+        errorMessage.textContent = lockoutMessage;
+        errorMessage.style.display = 'block';
+        return;
+      }
+      
+      // パスワード強度チェック
+      const passwordError = validatePassword(password);
+      if (passwordError) {
+        errorMessage.textContent = passwordError;
+        errorMessage.style.display = 'block';
+        return;
+      }
+      
+      try {
+        // エラーメッセージをクリア
+        errorMessage.style.display = 'none';
+        successMessage.style.display = 'none';
+        // Safariプライベートモード対策：永続化をセッションに限定
+        try { await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION); } catch (e) {}
+
+        // Firebaseでサインイン
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        
+        // ログイン成功時の処理
+        resetLoginAttempts();
+        startSession();
+        
+        // 成功メッセージを表示
+        successMessage.textContent = 'ログインに成功しました！リダイレクト中...';
+        successMessage.style.display = 'block';
+        
+        // メインページにリダイレクト
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1500);
+        
+      } catch (error) {
+        // ログイン失敗時の処理
+        incrementLoginAttempts();
+        
+        // エラーメッセージを表示
+        let errorText = 'ログインに失敗しました。';
+        
+        switch (error.code) {
+          case 'auth/user-not-found':
+            errorText = 'ユーザーが見つかりません。';
+            break;
+          case 'auth/wrong-password':
+            errorText = 'パスワードが間違っています。';
+            break;
+          case 'auth/invalid-email':
+            errorText = 'メールアドレスの形式が正しくありません。';
+            break;
+          case 'auth/too-many-requests':
+            errorText = '試行回数が多すぎます。しばらく待ってから再試行してください。';
+            break;
+        }
+        
+        // ロックアウト警告
+        if (loginAttempts >= SECURITY_CONFIG.maxLoginAttempts - 1) {
+          errorText += ' 次回の失敗でアカウントがロックされます。';
+        }
+        
+        errorMessage.textContent = errorText;
+        errorMessage.style.display = 'block';
+      }
+    });
+    
+    // 既にログインしている場合はメインページにリダイレクト
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        window.location.href = 'index.html';
+      }
+    });
+  </script>
+</body>
+</html>

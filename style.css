@@ -63,6 +63,7 @@ html, body { margin: 0; padding: 0; background: #FFF; color: #111; overflow-x: h
   background: #FFF; 
   position: relative;
   margin-top: 50px;
+  z-index: auto;
 }
 
 .bg-scope {
@@ -78,6 +79,7 @@ html, body { margin: 0; padding: 0; background: #FFF; color: #111; overflow-x: h
   background-position: bottom center;
   background-size: auto;         /* 等倍（縮小OK/拡大NG） */
   background-repeat: repeat;     /* 縦横リピート可 */
+  z-index: 0;
 }
 
 /* KV_main: ブラウザ基準センター（margin auto） */
@@ -86,6 +88,8 @@ html, body { margin: 0; padding: 0; background: #FFF; color: #111; overflow-x: h
   width: clamp(360px, 60vw, 694px);
   height: auto;
   margin: 0 auto;
+  position: relative;
+  z-index: 0;
 }
 
 /* kv-low を確実にセンター基準で overscan させるためのラッパ */
@@ -93,6 +97,7 @@ html, body { margin: 0; padding: 0; background: #FFF; color: #111; overflow-x: h
   position: relative;
   width: 100%;
   overflow: visible;
+  z-index: 0;
 }
 
 /* KV_low: 左右マージンなし、厳密センター。
@@ -106,6 +111,7 @@ html, body { margin: 0; padding: 0; background: #FFF; color: #111; overflow-x: h
   left: 50%;
   transform: translateX(-50%);
   margin: 0; /* サイドの余白なし */
+  z-index: 0;
 }
 
 /* 画面幅が bg実寸以下：横100%で縮小、縦はrepeatで下端まで */
@@ -128,12 +134,83 @@ html, body { margin: 0; padding: 0; background: #FFF; color: #111; overflow-x: h
   background: #FFF; 
   padding: 20px 0; 
   position: relative;
-  z-index: 1;
+  z-index: 10; /* コンテンツ層をヒーローより前面に */
   overflow-x: hidden;
 }
 .container { width: min(92vw, 1080px); margin: 0 auto; line-height: 1.4; }
 
 
+
+.announcement-badge {
+  position: relative;
+  z-index: 20; /* 基本前面 */
+  background: none;
+  border: 3px solid transparent;
+  border-radius: 12px;
+  padding: 16px 17px;
+  margin: 10px 20px 0;
+  /* 枠を背景レイヤーで描画（単一の枠内で上下2段の配色） */
+  background-image:
+    linear-gradient(#fff, #fff),
+    linear-gradient(90deg, #f11907 0%, #f11907 25%, #0778f1 25%, #0778f1 50%, #f15e07 50%, #f15e07 75%, #07f1f0 75%, #07f1f0 100%),
+    linear-gradient(90deg, #07f1f0 0%, #07f1f0 25%, #f15e07 25%, #f15e07 50%, #0778f1 50%, #0778f1 75%, #f11907 75%, #f11907 100%);
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-position: center, top, bottom;
+  background-size: 100% 100%, 100% 50%, 100% 50%;
+  background-clip: padding-box, border-box, border-box;
+  background-origin: padding-box, border-box, border-box;
+}
+
+/* コンテンツ側の重複を防ぐ（ヒーロー内のバッジのみ使用） */
+.content .announcement-badge:not(.announcement-badge--hero) { display: none; }
+
+@media (min-width: 769px) {
+  /* PC：ヒーロー内に重ね、上辺固定（下方向に伸びる） */
+  .announcement-badge--hero {
+    position: absolute;
+    right: calc((100vw - min(92vw, 1080px)) / 2 + 0px); /* 20pxぶん右へ寄せる */
+    top: calc(100% - 40px); /* さらに5px上げる */
+    width: 600px;
+    z-index: 50;
+    display: block;
+  }
+  /* PC時：NEWSセクションがバッジに被らないよう上余白を確保 */
+  .news-section { margin-top: 110px; }
+}
+
+
+/* タブレット以下：ヒーロー内で中央配置し、上辺固定 */
+@media (max-width: 768px) {
+  .announcement-badge--hero {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: calc(100% - 35px); /* 20px下げる */
+    width: calc(min(92vw, 1080px) - 40px);
+    z-index: 50;
+    display: block;
+    margin: 0;
+    right: auto;
+  }
+}
+
+/* 769px〜770pxでも20px下げる */
+@media (min-width: 769px) and (max-width: 770px) {
+  .announcement-badge--hero {
+    top: calc(100% - 20px);
+  }
+}
+
+.announcement-badge p {
+  margin: 0;
+  color: #333;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.announcement-badge p + p {
+  margin-top: 6px;
+}
 
 .highlight-badge {
   background: linear-gradient(135deg, #4ECDC4, #44A08D);
@@ -444,7 +521,7 @@ section {
   }
   
   .news-section {
-    margin-top: 30px;
+    margin-top: 140px;
     padding: 30px 20px;
   }
   
@@ -490,7 +567,7 @@ section {
   }
   
   .news-section {
-    margin-top: 15px;
+    margin-top: 140px;
     padding: 15px 20px;
   }
   
