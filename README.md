@@ -1,127 +1,104 @@
 # マチ★アソビ Vol.29 ティザーサイト
 
-## Firebase認証の設定手順
+徳島をアソビ尽くすイベント「マチ★アソビ Vol.29」のティザーサイトです。
 
-このプロジェクトは、Netlifyのベーシック認証からFirebase Authenticationに移行しています。
+## 🚀 開発フロー
 
-### 1. Firebaseプロジェクトの作成
+このプロジェクトでは、以下の開発フローを採用しています：
 
-1. [Firebase Console](https://console.firebase.google.com/) にアクセス
-2. 「プロジェクトを追加」をクリック
-3. プロジェクト名を入力（例：`machiasobi-vol29`）
-4. Google Analyticsの有効化は任意
-5. 「プロジェクトを作成」をクリック
+### 1. ローカル開発
+```bash
+# ローカル開発サーバーを起動
+./scripts/dev-workflow.sh dev
+```
+- ブラウザで `http://localhost:8000` にアクセス
+- ファイルの変更は自動的に反映されます
 
-### 2. Webアプリの追加
+### 2. GitHubにプッシュ
+```bash
+# 変更をコミットしてGitHubにプッシュ
+./scripts/dev-workflow.sh commit
+```
+- 変更されたファイルを確認
+- コミットメッセージを入力
+- 自動的にGitHubにプッシュ
 
-1. プロジェクトのダッシュボードで「Web」アイコンをクリック
-2. アプリのニックネームを入力（例：`machiasobi-web`）
-3. 「Firebase Hosting も設定する」のチェックは外す
-4. 「アプリを登録」をクリック
+### 3. Firebaseにデプロイ
+```bash
+# Firebaseにデプロイ
+./scripts/dev-workflow.sh deploy
+```
+- 本番環境に反映
 
-### 3. 設定情報の取得
-
-1. 登録されたアプリの設定情報をコピー
-2. `firebase-config.js` ファイルの `firebaseConfig` オブジェクトを更新：
-
-```javascript
-const firebaseConfig = {
-  apiKey: "実際のAPIキー",
-  authDomain: "実際のプロジェクトID.firebaseapp.com",
-  projectId: "実際のプロジェクトID",
-  storageBucket: "実際のプロジェクトID.appspot.com",
-  messagingSenderId: "実際のメッセージング送信者ID",
-  appId: "実際のアプリID"
-};
+### 4. 一括実行
+```bash
+# コミットからデプロイまで一括実行
+./scripts/dev-workflow.sh full-deploy
 ```
 
-### 4. 認証の有効化
+## 🛠️ 開発環境のセットアップ
 
-1. Firebase Consoleの左メニューから「Authentication」を選択
-2. 「始める」をクリック
-3. 「サインイン方法」タブで「メール/パスワード」を有効化
-4. 「有効にする」をクリック
+### 必要なツール
+- Git
+- Python 3.x（ローカルサーバー用）
+- Firebase CLI（デプロイ用）
 
-### 5. ユーザーの作成
-
-1. 「Authentication」→「ユーザー」タブ
-2. 「ユーザーを追加」をクリック
-3. メールアドレスとパスワードを入力
-4. 「ユーザーを追加」をクリック
-
-### 6. セキュリティルールの設定
-
-Firebase Hostingを使用する場合は、`firebase.json` ファイルを作成：
-
-```json
-{
-  "hosting": {
-    "public": ".",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ]
-  }
-}
+### Firebase CLIのインストール
+```bash
+npm install -g firebase-tools
+firebase login
 ```
 
-### 7. デプロイ
+### プロジェクトのクローン
+```bash
+git clone https://github.com/ps-imura/test.git
+cd test
+```
 
-#### Firebase Hostingを使用する場合：
+## 📁 プロジェクト構造
+
+```
+action0830_4/
+├── index.html          # メインページ
+├── news.html          # ニュースページ
+├── login.html         # ログインページ
+├── style.css          # スタイルシート
+├── gate.js            # アクセス制御
+├── firebase-config.js # Firebase設定
+├── firebase.json      # Firebase設定ファイル
+├── scripts/           # 開発用スクリプト
+│   └── dev-workflow.sh
+└── public/            # 静的ファイル
+```
+
+## 🎨 主な機能
+
+- **アナウンスメントバッジ**: 開催情報の表示
+- **ニュースセクション**: 最新情報の一覧
+- **アクセス制御**: `gate.js`による制御
+- **レスポンシブデザイン**: モバイル・PC対応
+
+## 🔧 開発用コマンド
 
 ```bash
-# Firebase CLIのインストール
-npm install -g firebase-tools
+# 現在の状況を確認
+./scripts/dev-workflow.sh status
 
-# ログイン
-firebase login
-
-# プロジェクトの初期化
-firebase init hosting
-
-# デプロイ
-firebase deploy
+# ヘルプを表示
+./scripts/dev-workflow.sh help
 ```
 
-#### その他のホスティングサービスを使用する場合：
+## 📝 開発時の注意点
 
-- `firebase-config.js` の設定を正しく更新
-- すべてのファイルをアップロード
-- HTTPSが有効になっていることを確認
+1. **ローカル開発**: 必ずローカルで動作確認してからコミット
+2. **コミットメッセージ**: 変更内容が分かりやすいメッセージを記述
+3. **デプロイ前確認**: GitHubにプッシュ後、問題なければFirebaseにデプロイ
 
-### 8. 動作確認
+## 🌐 本番環境
 
-1. サイトにアクセス
-2. ログインページにリダイレクトされることを確認
-3. 作成したユーザーでログイン
-4. メインページが表示されることを確認
-5. ログアウトボタンでログアウトできることを確認
+- **URL**: https://imuradev-5fc55.web.app/
+- **プロジェクト**: imuradev-5fc55
 
-### セキュリティ機能
+## 📞 サポート
 
-- **ブルートフォース攻撃対策**: 5回のログイン失敗で15分間アカウントロック
-- **パスワード強度チェック**: 最低8文字、大文字・小文字・数字を含む
-- **セッション管理**: 1時間で自動ログアウト
-- **セキュリティヘッダー**: XSS、クリックジャッキング、MIME型スニッフィング対策
-- **Content Security Policy**: リソースの読み込み制限
-
-### 注意事項
-
-- Firebaseの無料プランでも認証機能は利用可能
-- メール/パスワード認証は基本的なセキュリティ機能
-- 本格的な運用では、より高度なセキュリティ設定を検討
-- APIキーは公開されますが、適切なセキュリティルールで保護される
-- セキュリティヘッダーにより、ブラウザのセキュリティ機能が強化される
-
-### トラブルシューティング
-
-- ログインできない場合：Firebase Consoleでユーザーが正しく作成されているか確認
-- 認証エラーが発生する場合：ブラウザのコンソールでエラーメッセージを確認
-- リダイレクトが動作しない場合：Firebase SDKが正しく読み込まれているか確認
+開発に関する質問や問題がございましたら、お気軽にお声かけください。
