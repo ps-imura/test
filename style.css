@@ -718,6 +718,47 @@ section {
   }
 }
 
+/* モバイルデバイス用のNEWSセクション調整 */
+@media (max-width: 768px) {
+  .news-section {
+    height: auto !important; /* 高さを自動調整 */
+    min-height: 250px; /* 最小高さを設定 */
+    overflow: hidden; /* オーバーフローを制御 */
+  }
+  
+  .news-list {
+    max-height: none !important; /* 最大高さ制限を解除 */
+    overflow-y: visible; /* スクロールを無効化 */
+    padding-right: 0; /* 右パディングを削除 */
+  }
+  
+  /* iPhoneでのスクロール問題を解決 */
+  .news-list::-webkit-scrollbar {
+    display: none; /* スクロールバーを非表示 */
+  }
+  
+  /* モバイルでのスクロール動作を最適化 */
+  .news-section {
+    -webkit-overflow-scrolling: touch; /* iOSでのスムーズスクロール */
+    overscroll-behavior: contain; /* オーバースクロールを制御 */
+  }
+  
+  /* iPhoneでの余白問題を解決 */
+  .news-section {
+    margin-bottom: 20px; /* 下部余白を適切に設定 */
+  }
+  
+  /* ニュースアイテムの余白を調整 */
+  .news-item {
+    padding: 8px 0; /* パディングを調整 */
+    margin-bottom: 8px; /* 下部マージンを追加 */
+  }
+  
+  .news-item:last-child {
+    margin-bottom: 0; /* 最後のアイテムのマージンを削除 */
+  }
+}
+
 /* 右カラム（ピックアップとアバウト） */
 .right-column {
   display: flex;
