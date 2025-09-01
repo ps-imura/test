@@ -110,8 +110,7 @@
     return;
   }
 
-  // 開発中: 認証チェックをスキップ
-  /*
+  // 認証チェックを有効化
   if (!readCookie(COOKIE_KEY)) {
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', buildOverlay);
@@ -119,7 +118,6 @@
       buildOverlay();
     }
   }
-  */
 })();
 
 
