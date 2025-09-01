@@ -724,9 +724,10 @@ section {
     height: auto !important; /* 高さを自動調整 */
     min-height: 250px; /* 最小高さを設定 */
     overflow: visible; /* オーバーフローを表示 */
-    margin-top: 20px !important; /* 上部マージンを強制設定 */
+    margin-top: 0 !important; /* 上部マージンを0に設定 */
     margin-bottom: 20px !important; /* 下部マージンを強制設定 */
     padding: 20px !important; /* パディングを強制設定 */
+    position: static !important; /* 位置を静的に設定 */
   }
   
   .news-list {
@@ -744,11 +745,12 @@ section {
   /* モバイルでのスクロール動作を最適化 */
   .news-section {
     -webkit-overflow-scrolling: touch; /* iOSでのスムーズスクロール */
-    overscroll-behavior: contain; /* オーバースクロールを制御 */
-    position: relative; /* 位置を相対に設定 */
-    z-index: 1; /* z-indexを設定 */
-    will-change: transform; /* 変更予定プロパティを指定 */
-    contain: layout style paint; /* レイアウト分離を指定 */
+    overscroll-behavior: none; /* オーバースクロールを完全に無効化 */
+    -webkit-overscroll-behavior: none; /* Safari用のオーバースクロール制御 */
+    position: static; /* 位置を静的に設定 */
+    z-index: auto; /* z-indexを自動に設定 */
+    will-change: auto; /* 変更予定プロパティを自動に設定 */
+    contain: none; /* レイアウト分離を無効化 */
   }
   
   /* iPhoneでの表示問題を根本的に解決 */
@@ -777,12 +779,12 @@ section {
     padding: 8px 0 !important; /* パディングを調整 */
     margin-bottom: 8px !important; /* 下部マージンを追加 */
     border-bottom: 1px dotted #ccc !important; /* ボーダーを強制表示 */
-    transform: translateZ(0); /* ハードウェアアクセラレーションを有効化 */
-    backface-visibility: hidden; /* 背面表示を無効化 */
-    -webkit-transform: translateZ(0); /* Safari用のハードウェアアクセラレーション */
-    -webkit-backface-visibility: hidden; /* Safari用の背面表示制御 */
-    will-change: transform; /* 変更予定プロパティを指定 */
-    contain: layout style paint; /* レイアウト分離を指定 */
+    transform: none; /* 3D変換を無効化 */
+    backface-visibility: visible; /* 背面表示を有効化 */
+    -webkit-transform: none; /* Safari用の3D変換を無効化 */
+    -webkit-backface-visibility: visible; /* Safari用の背面表示を有効化 */
+    will-change: auto; /* 変更予定プロパティを自動に設定 */
+    contain: none; /* レイアウト分離を無効化 */
   }
   
   .news-item:last-child {
@@ -809,27 +811,33 @@ section {
     padding: 1px 6px !important;
   }
   
-  /* iOSでの上方向スクロール問題を完全解決 */
+  /* iOSでのスクロール問題を根本的に解決 */
   .news-section {
-    -webkit-overflow-scrolling: auto; /* スクロール動作を自動に変更 */
-    overflow-scrolling: auto; /* 標準のスクロール動作 */
-    scroll-behavior: auto; /* スクロール動作を自動に設定 */
+    -webkit-overflow-scrolling: touch; /* iOSでのスムーズスクロールを復活 */
+    overflow-scrolling: touch; /* 標準のスムーズスクロール */
+    scroll-behavior: smooth; /* スムーズスクロールを有効化 */
+    overscroll-behavior: none; /* オーバースクロールを完全に無効化 */
+    -webkit-overscroll-behavior: none; /* Safari用のオーバースクロール制御 */
   }
   
   /* ニュースリストのスクロール制御 */
   .news-list {
-    -webkit-overflow-scrolling: auto; /* スクロール動作を自動に変更 */
-    overflow-scrolling: auto; /* 標準のスクロール動作 */
-    scroll-behavior: auto; /* スクロール動作を自動に設定 */
+    -webkit-overflow-scrolling: touch; /* iOSでのスムーズスクロールを復活 */
+    overflow-scrolling: touch; /* 標準のスムーズスクロール */
+    scroll-behavior: smooth; /* スムーズスクロールを有効化 */
+    overscroll-behavior: none; /* オーバースクロールを完全に無効化 */
+    -webkit-overscroll-behavior: none; /* Safari用のオーバースクロール制御 */
   }
   
-  /* iOSでのスクロール問題を根本的に解決 */
+  /* スクロール問題を完全解決 */
   .news-section,
   .news-list {
-    -webkit-transform: translate3d(0, 0, 0); /* 3D変換でレイヤー分離 */
-    transform: translate3d(0, 0, 0); /* 3D変換でレイヤー分離 */
-    -webkit-backface-visibility: hidden; /* 背面表示を無効化 */
-    backface-visibility: hidden; /* 背面表示を無効化 */
+    -webkit-transform: none; /* 3D変換を無効化 */
+    transform: none; /* 3D変換を無効化 */
+    -webkit-backface-visibility: visible; /* 背面表示を有効化 */
+    backface-visibility: visible; /* 背面表示を有効化 */
+    -webkit-perspective: none; /* 3D視点を無効化 */
+    perspective: none; /* 3D視点を無効化 */
   }
 }
 
