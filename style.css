@@ -747,6 +747,8 @@ section {
     overscroll-behavior: contain; /* オーバースクロールを制御 */
     position: relative; /* 位置を相対に設定 */
     z-index: 1; /* z-indexを設定 */
+    will-change: transform; /* 変更予定プロパティを指定 */
+    contain: layout style paint; /* レイアウト分離を指定 */
   }
   
   /* iPhoneでの表示問題を根本的に解決 */
@@ -765,6 +767,9 @@ section {
     transform: translateZ(0); /* ハードウェアアクセラレーションを有効化 */
     backface-visibility: hidden; /* 背面表示を無効化 */
     perspective: 1000px; /* 3D変換の視点を設定 */
+    -webkit-transform: translateZ(0); /* Safari用のハードウェアアクセラレーション */
+    -webkit-backface-visibility: hidden; /* Safari用の背面表示制御 */
+    -webkit-perspective: 1000px; /* Safari用の3D変換視点 */
   }
   
   /* ニュースアイテムの表示を最適化 */
@@ -774,6 +779,10 @@ section {
     border-bottom: 1px dotted #ccc !important; /* ボーダーを強制表示 */
     transform: translateZ(0); /* ハードウェアアクセラレーションを有効化 */
     backface-visibility: hidden; /* 背面表示を無効化 */
+    -webkit-transform: translateZ(0); /* Safari用のハードウェアアクセラレーション */
+    -webkit-backface-visibility: hidden; /* Safari用の背面表示制御 */
+    will-change: transform; /* 変更予定プロパティを指定 */
+    contain: layout style paint; /* レイアウト分離を指定 */
   }
   
   .news-item:last-child {
@@ -798,6 +807,29 @@ section {
   .news-category {
     font-size: 0.7rem !important;
     padding: 1px 6px !important;
+  }
+  
+  /* iOSでの上方向スクロール問題を完全解決 */
+  .news-section {
+    -webkit-overflow-scrolling: auto; /* スクロール動作を自動に変更 */
+    overflow-scrolling: auto; /* 標準のスクロール動作 */
+    scroll-behavior: auto; /* スクロール動作を自動に設定 */
+  }
+  
+  /* ニュースリストのスクロール制御 */
+  .news-list {
+    -webkit-overflow-scrolling: auto; /* スクロール動作を自動に変更 */
+    overflow-scrolling: auto; /* 標準のスクロール動作 */
+    scroll-behavior: auto; /* スクロール動作を自動に設定 */
+  }
+  
+  /* iOSでのスクロール問題を根本的に解決 */
+  .news-section,
+  .news-list {
+    -webkit-transform: translate3d(0, 0, 0); /* 3D変換でレイヤー分離 */
+    transform: translate3d(0, 0, 0); /* 3D変換でレイヤー分離 */
+    -webkit-backface-visibility: hidden; /* 背面表示を無効化 */
+    backface-visibility: hidden; /* 背面表示を無効化 */
   }
 }
 
