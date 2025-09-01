@@ -27,18 +27,23 @@
   width: auto;
 }
 
-.x-logo {
-  height: 75px;
-  width: auto;
-  cursor: pointer;
+.header-x-link {
+  display: flex;
+  align-items: center;
   transition: opacity 0.3s ease;
-  position: relative;
-  top: 30px;
 }
 
-.x-logo:hover {
+.header-x-link:hover {
   opacity: 0.7;
 }
+
+.header-x-icon {
+  height: 24px;
+  width: auto;
+  cursor: pointer;
+}
+
+
 
 /* === タイポグラフィ === */
 body {
@@ -71,30 +76,43 @@ html, body { margin: 0; padding: 0; background: #FFF; color: #111; overflow-x: h
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: stretch;          /* ← cross-axis のセンターをやめて干渉を排除 */
+  align-items: stretch;
   gap: 16px;
-  padding-top: 24px;
-  padding-bottom: 0;             /* KV_lowの下端＝背景の下端 */
+  padding-top: 54px;
+  padding-bottom: 50px;
   background-image: url('bg.jpg');
-  background-position: bottom center;
-  background-size: auto;         /* 等倍（縮小OK/拡大NG） */
-  background-repeat: repeat;     /* 縦横リピート可 */
+  background-position: top center;
+  background-size: auto;
+  background-repeat: repeat;
   z-index: 0;
 }
 
 /* KV_main: ブラウザ基準センター（margin auto） */
 .kv-main {
   display: block;
-  width: clamp(360px, 60vw, 694px);
+  width: clamp(400px, 65vw, 800px);
   height: auto;
   margin: 0 auto;
   position: relative;
   z-index: 0;
 }
 
+/* date.jpg: KV_mainの下に配置 */
+.date-image {
+  display: block;
+  width: clamp(400px, 65vw, 700px);
+  height: auto;
+  margin: 10px auto 0;
+  position: relative;
+  z-index: 0;
+}
+
 /* kv-low を確実にセンター基準で overscan させるためのラッパ */
 .kv-low-outer {
-  position: relative;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   width: 100%;
   overflow: visible;
   z-index: 0;
@@ -132,10 +150,17 @@ html, body { margin: 0; padding: 0; background: #FFF; color: #111; overflow-x: h
 
 .content { 
   background: #FFF; 
-  padding: 20px 0; 
+  padding: 0; 
   position: relative;
   z-index: 10; /* コンテンツ層をヒーローより前面に */
-  overflow-x: hidden;
+  overflow: hidden;
+}
+
+/* PC版2カラムレイアウト時のコンテンツエリア調整 */
+@media (min-width: 769px) {
+  .content {
+    padding-top: 15px;
+  }
 }
 .container { width: min(92vw, 1080px); margin: 0 auto; line-height: 1.4; }
 
@@ -144,33 +169,154 @@ html, body { margin: 0; padding: 0; background: #FFF; color: #111; overflow-x: h
 .announcement-badge {
   position: relative;
   z-index: 20; /* 基本前面 */
-  background: none;
-  border: 3px solid transparent;
   border-radius: 12px;
   padding: 16px 17px;
-  margin: 10px 20px 0;
-  /* 枠を背景レイヤーで描画（単一の枠内で上下2段の配色） */
-  background-image:
-    linear-gradient(#fff, #fff),
-    linear-gradient(90deg, #f11907 0%, #f11907 25%, #0778f1 25%, #0778f1 50%, #f15e07 50%, #f15e07 75%, #07f1f0 75%, #07f1f0 100%),
-    linear-gradient(90deg, #07f1f0 0%, #07f1f0 25%, #f15e07 25%, #f15e07 50%, #0778f1 50%, #0778f1 75%, #f11907 75%, #f11907 100%);
-  background-repeat: no-repeat, no-repeat, no-repeat;
-  background-position: center, top, bottom;
-  background-size: 100% 100%, 100% 50%, 100% 50%;
-  background-clip: padding-box, border-box, border-box;
-  background-origin: padding-box, border-box, border-box;
+  margin: 20px 20px 0;
+  background-color: #FFE8DB;
+}
+
+/* ヒーローセクション内のXのリンクボタン */
+.hero-x-link {
+  position: absolute;
+  bottom: 20px;
+  right: calc((100vw - min(92vw, 1080px)) / 2 + 10px);
+  z-index: 30;
+}
+
+.hero-x-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+  text-decoration: none;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.hero-x-button:hover {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.hero-x-button:active {
+  transform: scale(0.95);
+}
+
+.hero-x-icon {
+  width: 180px;
+  height: auto;
+  filter: none;
 }
 
 /* コンテンツ側の重複を防ぐ（ヒーロー内のバッジのみ使用） */
-.content .announcement-badge:not(.announcement-badge--hero) { display: none; }
+/* 825px以上：コンテンツ内のバッジを非表示 */
+@media (min-width: 826px) {
+  .content .announcement-badge:not(.announcement-badge--hero) { 
+    display: none; 
+  }
+}
 
-@media (min-width: 769px) {
-  /* PC：ヒーロー内に重ね、上辺固定（下方向に伸びる） */
+/* 825px以下：コンテンツ内のバッジを表示 */
+@media (max-width: 825px) {
+  .content .announcement-badge.announcement-badge--content {
+    display: block !important;
+    background-color: #fff2ee !important;
+    margin: 20px 20px 0 !important;
+  }
+  
+  /* より確実に適用するための追加設定 */
+  .announcement-badge.announcement-badge--content {
+    display: block !important;
+    background-color: #fff2ee !important;
+    margin: 20px 20px 0 !important;
+  }
+  
+  /* バッジが確実に表示されるように強制設定 */
+  body .content .announcement-badge.announcement-badge--content {
+    display: block !important;
+    background-color: #fff2ee !important;
+    margin: 20px 20px 0 !important;
+  }
+}
+
+
+
+
+/* 881px以上：date画像のサイズ調整 */
+@media (min-width: 881px) {
+  .date-image {
+    width: 650px;
+  }
+}
+
+/* 950px以上：PC用の固定幅設定 */
+@media (min-width: 950px) {
+  .bg-scope {
+    height: 700px;
+  }
+  
+  .kv-main {
+    width: 800px;
+  }
+  
+  .date-image {
+    width: 650px;
+  }
+  
   .announcement-badge--hero {
-    position: absolute;
-    right: calc((100vw - min(92vw, 1080px)) / 2 + 0px); /* 20pxぶん右へ寄せる */
-    top: calc(100% - 40px); /* さらに5px上げる */
+    position: relative;
+    left: auto;
+    transform: none;
+    top: auto;
     width: 600px;
+    margin: 30px auto 0;
+    z-index: 50;
+    display: block;
+  }
+  
+  /* PC時：Xのリンクボタンの調整 */
+  .hero-x-link {
+    right: calc((100vw - 1080px) / 2 + 10px);
+  }
+  
+  /* PC時：NEWSセクションがバッジに被らないよう上余白を確保 */
+  .news-section { margin-top: 110px; }
+}
+
+/* 1170px〜950px：中間サイズ用の設定 */
+@media (min-width: 950px) and (max-width: 1169px) {
+  .hero-x-link {
+    right: calc((100vw - 92vw) / 2 + 10px);
+  }
+}
+
+/* 950px以下のとき、ヒーローエリアの縦幅を画面幅に応じて短くする */
+@media (max-width: 950px) {
+  .bg-scope {
+    height: calc(700px - (950px - 100vw) * 0.8);
+  }
+}
+
+/* 950px〜769px：タブレット用の可変幅設定 */
+@media (min-width: 769px) and (max-width: 949px) {
+  .kv-main {
+    width: 80vw;
+  }
+  
+  .date-image {
+    width: 70vw;
+  }
+  
+  .announcement-badge--hero {
+    position: relative;
+    left: auto;
+    transform: none;
+    top: auto;
+    width: 600px;
+    margin: 30px auto 0;
     z-index: 50;
     display: block;
   }
@@ -178,34 +324,170 @@ html, body { margin: 0; padding: 0; background: #FFF; color: #111; overflow-x: h
   .news-section { margin-top: 110px; }
 }
 
+/* コンテンツエリア用Xリンク */
+.content-x-link {
+  text-align: center;
+  margin: 30px 0;
+}
 
-/* タブレット以下：ヒーロー内で中央配置し、上辺固定 */
-@media (max-width: 768px) {
-  .announcement-badge--hero {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: calc(100% - 35px); /* 20px下げる */
-    width: calc(min(92vw, 1080px) - 40px);
-    z-index: 50;
+.content-x-button {
+  display: inline-block;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.content-x-button:hover .content-x-icon {
+  filter: saturate(1.8);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.content-x-icon {
+  width: calc(100% - 40px);
+  height: auto;
+  max-width: calc(100% - 40px);
+  margin: 0 20px;
+}
+
+/* 880px以下：Xのリンクボタンを非表示、コンテンツエリア用Xリンクを表示 */
+@media (max-width: 880px) {
+  .hero-x-link {
+    display: none;
+  }
+  
+  .content-x-link {
     display: block;
+    width: min(92vw, 1080px);
+    margin: 30px auto;
+  }
+  
+  .content-x-icon {
+    width: 100%;
+    max-width: 100%;
     margin: 0;
-    right: auto;
   }
 }
 
-/* 769px〜770pxでも20px下げる */
-@media (min-width: 769px) and (max-width: 770px) {
-  .announcement-badge--hero {
-    top: calc(100% - 20px);
+/* 769px以上：コンテンツエリア用Xリンクの余白調整 */
+@media (min-width: 769px) {
+  .content-x-link {
+    margin: 15px 0;
   }
 }
+
+/* 880px以上：コンテンツエリア用Xリンクを非表示 */
+@media (min-width: 881px) {
+  .content-x-link {
+    display: none;
+  }
+}
+
+/* 825px以下：モバイル用の設定 */
+@media (max-width: 825px) {
+  .kv-main {
+    width: 80vw;
+    margin-top: -20px !important;
+  }
+  
+  .date-image {
+    width: 70vw;
+    margin-top: 20px !important;
+  }
+  
+  .announcement-badge--hero {
+    display: none; /* ヒーロー内のバッジを非表示 */
+  }
+  
+
+  
+  /* モバイル時：Xのリンクボタンの調整 */
+  .hero-x-link {
+    margin: 15px 20px;
+  }
+  
+  .hero-x-button {
+    padding: 14px 20px;
+    font-size: 0.9rem;
+  }
+  
+  /* モバイル時：Xリンクのサイズをバッジに合わせる */
+  .content-x-icon {
+    width: calc(100% - 40px);
+    margin: 0 20px;
+  }
+  
+  /* モバイル時：Xリンクの上下余白を詰める */
+  .content-x-link {
+    margin: 20px 0 20px 0;
+  }
+}
+
+/* 500px以下：KV_mainとdateの間のマージンを画面の縮小に合わせて詰める */
+@media (max-width: 500px) {
+  .date-image {
+    margin-top: calc(20px - (500px - 100vw) * 0.1) !important;
+  }
+}
+
+/* 400px以下：小画面用の設定 */
+@media (max-width: 400px) {
+  .kv-main {
+    width: 80vw;
+    margin-top: calc(-30px + (400px - 100vw) * 0.25) !important;
+  }
+  
+  .date-image {
+    width: 70vw;
+    margin-top: calc(15px - (400px - 100vw) * 0.125) !important;
+  }
+}
+
+/* 380px以下：中間サイズ用の設定 */
+@media (max-width: 380px) {
+  .kv-main {
+    width: 77.5vw;
+    margin-top: calc(-35px + (380px - 100vw) * 0.25) !important;
+  }
+  
+  .date-image {
+    width: 67.5vw;
+    margin-top: calc(12.5px - (380px - 100vw) * 0.125) !important;
+  }
+}
+
+/* 360px以下：極小画面用の設定 */
+@media (max-width: 360px) {
+  .bg-scope {
+    height: 230px;
+  }
+  
+  .kv-main {
+    width: 75vw;
+    margin-top: -40px !important;
+  }
+  
+  .date-image {
+    width: 65vw;
+    margin-top: 10px !important;
+  }
+  
+  .footer-logo {
+    width: 280px !important;
+  }
+  
+  /* より確実に適用するための追加設定 */
+  body .footer .footer-logo {
+    width: 280px !important;
+  }
+}
+
+
 
 .announcement-badge p {
   margin: 0;
   color: #333;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
+  text-align: center;
 }
 
 .announcement-badge p + p {
@@ -267,65 +549,281 @@ section {
   margin-bottom: 60px;
 }
 
+/* PC版2カラム内のセクションは余白を調整 */
+.pc-two-column section {
+  margin-bottom: 0;
+}
+
 .section-title {
   font-size: 2rem;
   font-family: "Lexend Giga", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo", "MS PGothic", "Helvetica Neue", Arial, sans-serif;
   font-weight: 700;
-  color: #d20023;
-  margin: 0 0 30px 0;
+  color: #f0530b;
+  margin: 0 0 20px 0; /* 余白を統一 */
   text-align: left;
   position: relative;
   display: flex;
   align-items: center;
   gap: 20px;
+  height: 40px; /* 高さを固定して統一 */
+}
+
+/* PC版2カラム内のセクションタイトルは余白を調整 */
+.pc-two-column .section-title {
+  margin: 15px 0 20px 0;
+  height: 40px; /* 高さを統一 */
+}
+
+/* PC版2カラム内のセクションは余白を統一 */
+.pc-two-column .news-section,
+.pc-two-column .buttons-section,
+.pc-two-column .about-section {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+}
+
+/* PC版2カラム内のニュースセクションの高さ調整 */
+.pc-two-column .news-section {
+  height: 610px;
+}
+
+.pc-two-column .news-list {
+  max-height: 610px;
+  overflow-y: auto;
 }
 
 .section-title::after {
   content: '';
   width: 100%;
   height: 3px;
-  background: linear-gradient(90deg, #f11907 0%, #f11907 25%, #0778f1 25%, #0778f1 50%, #f15e07 50%, #f15e07 75%, #07f1f0 75%, #07f1f0 100%);
+  background: #f0530b;
   border-radius: 2px;
   flex: 1;
 }
 
+/* PC版用の2カラムレイアウト */
+.pc-two-column {
+  display: flex;
+  gap: 25px;
+  align-items: stretch;
+  margin-top: 30px;
+  padding-top: 0;
+  height: 610px; /* 高さを10px追加 */
+}
+
+/* 825px以下：1カラムレイアウトに変更 */
+@media (max-width: 825px) {
+  .pc-two-column {
+    flex-direction: column;
+    height: auto;
+    width: calc(100% - 40px);
+    margin: 0 20px;
+    align-items: stretch; /* セクションを横幅いっぱいに */
+  }
+  
+  .right-column {
+    height: auto;
+    flex: 0 0 auto; /* 1カラム時は幅を自動調整 */
+    width: 100%; /* ニュースセクションと同じ幅 */
+    max-width: none; /* 最大幅制限を解除 */
+  }
+  
+  .news-section {
+    height: 250px !important;
+  }
+  
+  .news-list {
+    max-height: 250px !important;
+    overflow-y: auto;
+  }
+  
+  .buttons-section {
+    height: auto;
+  }
+  
+  .about-section {
+    height: auto;
+  }
+  
+  .button-grid {
+    grid-template-columns: repeat(3, 1fr) !important; /* 横3列に変更、強制適用 */
+    max-width: none !important; /* 最大幅制限を解除、強制適用 */
+  }
+  
+  /* より確実に適用するための追加設定 */
+  .pc-two-column .right-column .buttons-section .button-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    max-width: none !important;
+  }
+}
+
+/* 610px以下：ボタンを横2列に変更 */
+@media (max-width: 610px) {
+  .button-grid {
+    grid-template-columns: repeat(2, 1fr) !important; /* 横2列に変更 */
+  }
+  
+  /* より確実に適用するための追加設定 */
+  .pc-two-column .right-column .buttons-section .button-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* 420px以下：ボタンを1列に変更 */
+@media (max-width: 420px) {
+  .button-grid {
+    grid-template-columns: 1fr !important; /* 1列に変更 */
+  }
+  
+  /* より確実に適用するための追加設定 */
+  .pc-two-column .right-column .buttons-section .button-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* ピックアップセクションの高さを自動調整 */
+  .buttons-section {
+    height: auto !important; /* 高さを自動調整 */
+    padding: 15px 15px 25px 15px; /* パディングを維持 */
+  }
+  
+  /* ボタンの高さも調整 */
+  .action-button {
+    height: 70px !important; /* ボタンの高さを少し縮小 */
+  }
+  
+  /* 右カラム全体の高さも自動調整 */
+  .right-column {
+    height: auto !important; /* 高さを自動調整 */
+  }
+  
+  /* 2カラムレイアウト全体の高さも自動調整 */
+  .pc-two-column {
+    height: auto !important; /* 高さを自動調整 */
+  }
+}
+
+/* 360px以下：アバウトセクション内のテキストサイズを調整 */
+@media (max-width: 360px) {
+  .about-label {
+    font-size: 0.8rem !important; /* ラベルのフォントサイズを縮小 */
+  }
+  
+  .about-value {
+    font-size: 0.8rem !important; /* 値のフォントサイズを縮小 */
+  }
+  
+  .about-content {
+    gap: 8px; /* 要素間の間隔も調整 */
+  }
+}
+
+/* 右カラム（ピックアップとアバウト） */
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  flex: 0 0 400px; /* 固定幅400px、伸縮しない */
+  margin-bottom: 0;
+  height: 610px; /* 高さを10px追加 */
+}
+
 /* ニュースセクション */
 .news-section {
-  background: #fff;
+  background: #FFF5F0;
   padding: 20px;
-  margin-top: 10px; /*　バッジの位置に合わせて調整 */
+  margin-top: 0;
+  flex: 1; /* 残りのスペースを使用 */
+  border-radius: 12px;
+  height: 610px; /* 高さを10px追加 */
+  display: flex;
+  flex-direction: column;
 }
 
 .news-list {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 6px;
+  overflow-y: auto;
+  max-height: 610px; /* ニュースセクションの高さに合わせて調整 */
+  padding-right: 8px;
+}
+
+/* スクロールバーのカスタマイズ */
+.news-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.news-list::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 3px;
+}
+
+.news-list::-webkit-scrollbar-thumb {
+  background: #f0530b;
+  border-radius: 3px;
+}
+
+.news-list::-webkit-scrollbar-thumb:hover {
+  background: #d44a0a;
 }
 
 .news-item {
   display: flex;
-  align-items: center;
-  padding: 5px 5px 5px 20px;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 6px 0;
   transition: all 0.3s ease;
-  border-left: 4px solid #d20023;
+  border-bottom: 1px dotted #ccc;
 }
 
-.news-item:hover {
-  transform: translateX(10px);
-  background: #e9ecef;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+.news-item:last-child {
+  border-bottom: none;
+}
+
+
+
+.news-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 5px;
 }
 
 .news-date {
   font-size: 0.9rem;
   font-weight: 600;
   color: #f0530b;
-  min-width: 120px;
-  margin-right: 20px;
+  margin: 0;
+}
+
+.news-category {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.news-category--news {
+  background: #f0530b; /* オレンジ */
+}
+
+.news-category--event {
+  background: #0778f1; /* 青 */
+}
+
+.news-category--live {
+  background: #d20023; /* 赤 */
+}
+
+.news-category--pickup {
+  background: #4ECDC4; /* 水色 */
 }
 
 .news-text {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: #495057;
   margin: 0;
 }
@@ -367,28 +865,86 @@ section {
 /* ボタンセクション */
 .buttons-section {
   text-align: center;
+  flex: 1;
+  margin-top: 0;
+  background: #FFF5F0;
+  padding: 15px 15px 25px 15px; /* 下部パディングを10px追加 */
+  border-radius: 12px;
+  height: 360px; /* 高さを10px追加 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* アバウトセクション */
+.about-section {
+  text-align: left;
+  flex: 1;
+  margin-top: 0;
+  background: #FFF5F0;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 0;
+  height: 225px; /* この高さは維持 */
+  display: flex;
+  flex-direction: column;
+}
+
+.about-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.about-item {
+  display: flex;
+  align-items: baseline;
+}
+
+.about-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #f0530b;
+  min-width: 80px;
+  margin-right: 10px;
+}
+
+.about-value {
+  font-size: 0.9rem;
+  color: #333;
+  font-weight: 400;
 }
 
 .button-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  margin-top: 30px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px; /* gapを調整してセクション内に収める */
+  margin-top: 0;
+  flex: 1;
+  align-items: center;
+  width: 100%;
+  max-width: 400px; /* 右カラムの幅に合わせて固定 */
 }
 
 .action-button {
   display: inline-block;
-  padding: 60px 30px;
+  width: 100%;
+  height: 80px; /* 高さを調整してセクション内に収める */
+  padding: 0;
   background: linear-gradient(135deg, #b3b3b3, #ffffff);
   color: white;
   text-decoration: none;
   border-radius: 10px;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.9rem; /* フォントサイズも調整 */
   transition: all 0.3s ease;
   box-shadow: 0 5px 15px rgba(230, 230, 230, 0.3);
   border: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 150px; /* 最小幅も調整 */
 }
 
 .action-button:hover {
@@ -403,11 +959,11 @@ section {
 
 /* フッター */
 .footer {
-  margin-top: 80px;
+  margin-top: 20px;
 }
 
 .footer-top {
-  background: #f0530b;
+  background: #343434;
   color: white;
   padding: 40px 0 20px;
 }
@@ -415,7 +971,7 @@ section {
 .footer-top .container {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .footer-left {
@@ -453,7 +1009,7 @@ section {
 .footer-logo {
   width: 240px;
   height: auto;
-  margin-bottom: 10px;
+  margin-bottom: 0;
 }
 
 .footer-text-link {
@@ -469,8 +1025,45 @@ section {
   opacity: 0.7;
 }
 
+.footer-right-link {
+  color: white;
+  text-decoration: underline;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: opacity 0.3s ease;
+}
+
+.footer-right-link:hover {
+  opacity: 0.7;
+}
+
+/* 456px以下：フッター内のロゴとリンクテキストを上下に配置 */
+@media (max-width: 456px) {
+  .footer-top .container {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .footer-left {
+    text-align: center;
+  }
+  
+  .footer-right {
+    text-align: center;
+  }
+  
+  .footer-logo {
+    width: 320px !important;
+  }
+  
+  .footer-right-link {
+    font-size: 0.9rem;
+  }
+}
+
 .footer-bottom {
-  background: #21384f;
+  background: #343434;
   color: white;
   padding: 10px 0;
 }
@@ -507,9 +1100,8 @@ section {
 
 /* === レスポンシブデザイン === */
 @media (max-width: 768px) {
-  .x-logo {
-    height: 60px;
-    top: 12px;
+  .header-x-icon {
+    height: 20px;
   }
   
   .highlight-badge {
@@ -521,24 +1113,41 @@ section {
   }
   
   .news-section {
-    margin-top: 140px;
-    padding: 30px 20px;
+    margin-top: 20px;
+    padding: 20px; /* パディングを統一 */
+    height: auto; /* 高さを自動調整 */
   }
   
   .news-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 0px;
+    padding: 8px 0; /* パディングを調整 */
+  }
+  
+  .news-header {
+    gap: 8px;
   }
   
   .news-date {
     margin-right: 0;
-    margin-bottom: 5px;
+    margin-bottom: 0;
+  }
+  
+  .news-category {
+    font-size: 0.7rem;
+    padding: 1px 6px;
   }
   
   .button-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr); /* 横3列に変更 */
     gap: 15px;
+    max-width: none; /* 最大幅制限を解除 */
+  }
+  
+  /* 1カラム時のボタンの比率を保持 */
+  .action-button {
+    height: 80px; /* 幅に合わせて高さを調整、比率を保持 */
   }
   
   .footer-links {
@@ -546,28 +1155,33 @@ section {
     align-items: center;
     gap: 20px;
   }
+  
+  .footer-logo {
+    width: 200px;
+  }
+  
+  .footer-right-link {
+    font-size: 0.85rem;
+  }
 }
 
 @media (max-width: 480px) {
-  .x-logo {
-    height: 55px;
-    top: 12px;
+  .header-x-icon {
+    height: 18px;
   }
   
   .section-title {
     font-size: 1.5rem;
   }
   
-  .content {
-    padding: 20px 0;
-  }
+
   
   section {
     margin-bottom: 40px;
   }
   
   .news-section {
-    margin-top: 140px;
+    margin-top: 20px;
     padding: 15px 20px;
   }
   
@@ -583,11 +1197,6 @@ section {
 
 /* === フッターSPサイズ対応 === */
 @media (max-width: 580px) {
-  .footer-logo {
-    width: 168px !important;
-    margin-bottom: 7px !important;
-  }
-  
   .footer-text-link {
     font-size: 0.56rem !important;
   }
@@ -609,11 +1218,6 @@ section {
 }
 
 @media (max-width: 480px) {
-  .footer-logo {
-    width: 140px !important;
-    margin-bottom: 7px !important;
-  }
-  
   .footer-text-link {
     font-size: 0.56rem !important;
   }

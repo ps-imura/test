@@ -102,6 +102,7 @@
     setTimeout(function(){ input.focus(); }, 50);
   }
 
+  // 開発中: 認証を一時的に無効化
   // URLの?access=コード でも入室可
   var urlCode = getParam('access');
   if (urlCode && urlCode === ACCESS_CODE) {
@@ -109,6 +110,8 @@
     return;
   }
 
+  // 開発中: 認証チェックをスキップ
+  /*
   if (!readCookie(COOKIE_KEY)) {
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', buildOverlay);
@@ -116,6 +119,7 @@
       buildOverlay();
     }
   }
+  */
 })();
 
 
