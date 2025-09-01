@@ -723,39 +723,81 @@ section {
   .news-section {
     height: auto !important; /* 高さを自動調整 */
     min-height: 250px; /* 最小高さを設定 */
-    overflow: hidden; /* オーバーフローを制御 */
+    overflow: visible; /* オーバーフローを表示 */
+    margin-top: 20px !important; /* 上部マージンを強制設定 */
+    margin-bottom: 20px !important; /* 下部マージンを強制設定 */
+    padding: 20px !important; /* パディングを強制設定 */
   }
   
   .news-list {
     max-height: none !important; /* 最大高さ制限を解除 */
-    overflow-y: visible; /* スクロールを無効化 */
-    padding-right: 0; /* 右パディングを削除 */
+    overflow-y: visible !important; /* スクロールを無効化 */
+    padding-right: 0 !important; /* 右パディングを削除 */
+    height: auto !important; /* 高さを自動調整 */
   }
   
   /* iPhoneでのスクロール問題を解決 */
   .news-list::-webkit-scrollbar {
-    display: none; /* スクロールバーを非表示 */
+    display: none !important; /* スクロールバーを非表示 */
   }
   
   /* モバイルでのスクロール動作を最適化 */
   .news-section {
     -webkit-overflow-scrolling: touch; /* iOSでのスムーズスクロール */
     overscroll-behavior: contain; /* オーバースクロールを制御 */
+    position: relative; /* 位置を相対に設定 */
+    z-index: 1; /* z-indexを設定 */
   }
   
-  /* iPhoneでの余白問題を解決 */
+  /* iPhoneでの表示問題を根本的に解決 */
+  .news-section * {
+    box-sizing: border-box; /* ボックスサイジングを統一 */
+  }
+  
+  /* ニュースリストの表示を最適化 */
+  .news-list {
+    position: relative; /* 位置を相対に設定 */
+    z-index: 1; /* z-indexを設定 */
+  }
+  
+  /* iPhoneでの表示問題を完全解決 */
   .news-section {
-    margin-bottom: 20px; /* 下部余白を適切に設定 */
+    transform: translateZ(0); /* ハードウェアアクセラレーションを有効化 */
+    backface-visibility: hidden; /* 背面表示を無効化 */
+    perspective: 1000px; /* 3D変換の視点を設定 */
   }
   
-  /* ニュースアイテムの余白を調整 */
+  /* ニュースアイテムの表示を最適化 */
   .news-item {
-    padding: 8px 0; /* パディングを調整 */
-    margin-bottom: 8px; /* 下部マージンを追加 */
+    padding: 8px 0 !important; /* パディングを調整 */
+    margin-bottom: 8px !important; /* 下部マージンを追加 */
+    border-bottom: 1px dotted #ccc !important; /* ボーダーを強制表示 */
+    transform: translateZ(0); /* ハードウェアアクセラレーションを有効化 */
+    backface-visibility: hidden; /* 背面表示を無効化 */
   }
   
   .news-item:last-child {
-    margin-bottom: 0; /* 最後のアイテムのマージンを削除 */
+    margin-bottom: 0 !important; /* 最後のアイテムのマージンを削除 */
+    border-bottom: none !important; /* 最後のアイテムのボーダーを削除 */
+  }
+  
+  /* ニュースヘッダーの調整 */
+  .news-header {
+    gap: 8px !important;
+    margin-bottom: 5px !important;
+  }
+  
+  /* ニュース日付の調整 */
+  .news-date {
+    margin-right: 0 !important;
+    margin-bottom: 0 !important;
+    font-size: 0.9rem !important;
+  }
+  
+  /* ニュースカテゴリの調整 */
+  .news-category {
+    font-size: 0.7rem !important;
+    padding: 1px 6px !important;
   }
 }
 
@@ -1153,32 +1195,7 @@ section {
     font-size: 0.9rem;
   }
   
-  .news-section {
-    margin-top: 20px;
-    padding: 20px; /* パディングを統一 */
-    height: auto; /* 高さを自動調整 */
-  }
-  
-  .news-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0px;
-    padding: 8px 0; /* パディングを調整 */
-  }
-  
-  .news-header {
-    gap: 8px;
-  }
-  
-  .news-date {
-    margin-right: 0;
-    margin-bottom: 0;
-  }
-  
-  .news-category {
-    font-size: 0.7rem;
-    padding: 1px 6px;
-  }
+  /* NEWSセクションの設定は別途定義済み */
   
   .button-grid {
     grid-template-columns: repeat(3, 1fr); /* 横3列に変更 */
